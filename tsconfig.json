@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./build",
+    "baseUrl": "./",
+    "strict": true,
+    "importHelpers": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "allowJs": true,
+    "typeRoots": ["./node_modules/@types", "./api/types/@types"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": ["es2020", "DOM", "ES6" ,"DOM.Iterable", "ScriptHost"],
+    "skipLibCheck": true
+  },
+  "include": [
+    "package.json",
+    "package-lock.json",
+    "api/**/*.ts",
+    "api/worker/**/*.ts",
+    "config/*.js",
+    "migrations/*.js",
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

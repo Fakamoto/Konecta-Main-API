@@ -1,0 +1,15 @@
+export { UsersService } from './users.service';
+export { AuthService } from './auth.service';
+export { PermissionsService } from './permissions.service';
+export { JwtService } from './jwt.service';
+export { EmailService } from './email.service';
+export { S3Service } from './s3.service';
+export { PdfService } from './pdf.service';
+export { QRService } from './qr.service';
+export { WhatsappService } from './whatsapp.service';
+export { TemplateService } from './template.service';
+export { MercadoPagoService } from './mercadoPago.service';
+export { PythonService } from './python.service';
+export { TwoFAService } from './2fa.service';
+export { UltraMSGService } from './ultraMSG.service';
+export { KonectaAIApiService } from './konectaAIApi.service';

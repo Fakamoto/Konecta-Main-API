@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+    <style type="text/css">
+
+        body {
+            color: black;
+            margin: 0;
+            font-family: "Source Sans Pro",sans-serif;
+        }
+
+        page[size="A4"] {
+            color: black;
+            width: 21cm;
+            height: 29.7cm;
+            display: block;
+            margin: 0 auto;
+            padding: 50px 100px;
+            margin-bottom: 0.5cm;
+            box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .h-border {
+            border-top: 5px solid rgb(0, 151, 171);
+            border-top: 5px solid rgb(0, 151, 171);
+        }
+
+        .hl-border {
+            border-right: 5px solid rgb(0, 151, 171);
+        }
+
+        .hr-border {
+
+        }
+
+        .description-border {
+            border-top: 5px solid rgb(0, 151, 171);
+            border-bottom: 5px solid rgb(0, 151, 171);
+        }
+
+        .content-border {
+            border-bottom: 5px solid rgb(0, 151, 171);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        @media print {
+
+            page[size="A4"] {
+                box-shadow: none;
+                margin: 0;
+                page-break-after: always;
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+        }
+    </style>
+    <meta charset="UTF-8">
+    <title>Recibo</title>
+</head>
+<body id="body">
+<page size="A4">
+    <table>
+        <tbody>
+        <tr class="h-border" style="width: 100%;display: flex; flex-direction: row; justify-content: center; align-items: center ">
+            <td class="hr-border" style="font-size: 24px; width: 50%; min-height: 250px; padding: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center">
+                <div style="font-weight: bold; text-align: center">Example {{example}}</div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</page>
+</body>
+</html>

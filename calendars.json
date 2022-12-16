@@ -1,0 +1,33 @@
+[
+  {
+    "id": "eugenio.valeiras@gmail.com",
+    "name": "Main",
+    "main": true
+  },
+  {
+    "id": "a6994b049ef75924464a3a61970f392fa2758fed92fcc81f9dab5a788f0b6dd5@group.calendar.google.com",
+    "name": "Merge",
+    "merge": true
+  },
+  {
+    "id": "b1befff4382040b369120f2d4c39514eebe6693ea1dede761ee6a8027a7cbedd@group.calendar.google.com",
+    "name": "Busy",
+    "busy": true
+  },
+  {
+    "id": "evaleiras@clapps.xyz",
+    "name": "Clapps"
+  },
+  {
+    "id": "evaleiras@wembii.com",
+    "name": "Wembii"
+  },
+  {
+    "id": "eugenio.valeiras@bric.finance",
+    "name": "Bric"
+  },
+  {
+    "id": "evaleiras@pollux.finance",
+    "name": "Pollux"
+  }
+]

@@ -1,0 +1,35 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - echo Installing...
+  pre_build:
+    commands:
+      - echo Installing NPM dependencies...
+      - npm install
+      - echo $DOMAIN
+      - aws s3 cp --region=sa-east-1 "s3://$ENV_BUCKET/options.config" "./.ebextensions/options.config"
+      - npm run build
+      - touch .env
+      - rm -rf ./build/node_modules
+      - mv .npmrc ./build
+      - mv .ebextensions ./build
+      - mv ./templates ./build
+      - mv ./calendars.json ./build
+      - mv ./token.json ./build
+      - mkdir ./build/ssh/
+      - cp ./.env.example ./build
+      - cp ./.sequelizerc ./build
+  build:
+    commands:
+      - echo Building...
+  post_build:
+    commands:
+      - echo Build Complete!
+artifacts:
+  files:
+    - '**/*'
+  base-directory: 'build*'
