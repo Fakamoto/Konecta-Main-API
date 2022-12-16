@@ -47,6 +47,9 @@ const config = {
         testPublicKey: process.env.MP_TEST_PUBLIC_KEY,
         testAccessToken: process.env.MP_TEST_ACCESS_TOKEN,
     },
+    ultraMSG: {
+        token: process.env.ULTRA_MSG_TOKEN,
+    }
 };
 
 export default config;

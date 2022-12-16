@@ -1,4 +1,5 @@
 import Config from '../config';
+import request from 'request';
 
 export const endsWith = (str: string, suffix: string): boolean => {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
@@ -146,6 +147,28 @@ export class UltraMSGService {
 
     getReplyMessage(data: UltraMSGData): string {
         return data.quotedMsg ? data.quotedMsg.body : '';
+    }
+
+    sendMessage(prompt: string, to: string) {
+        return new Promise((resolve, reject) => {
+            const options = {
+                method: 'POST',
+                url: 'https://api.ultramsg.com/instance26462/messages/chat',
+                headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                form: {
+                    token: Config.ultraMSG.token,
+                    to,
+                    body: prompt,
+                    priority: '10',
+                    referenceId: ''
+                }
+            };
+
+            request(options, (error, response, body) => {
+                if (error) return reject(error);
+                resolve(body);
+            });
+        });
     }
 
 }

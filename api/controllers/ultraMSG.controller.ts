@@ -33,17 +33,14 @@ export class UltraMSGController {
         }
 
         // get Reply
-        const reply = await this.getReply(data, { isFromGroup, isFromUser });
+        const prompt = this.ultraMSGService.getPrompt(data);
+        const reply = await this.getReply(data, { prompt, isFromGroup, isFromUser });
 
-        console.log(prompt, reply);
-
+        await this.ultraMSGService.sendMessage(reply, data.from);
         res.status(OK).json({ message: 'Konecta Main API' });
     };
 
-    async getReply(data: UltraMSGData, { isFromGroup, isFromUser }: { isFromGroup: boolean, isFromUser: boolean }): Promise<string> {
-        // Start flow checker
-        const prompt = this.ultraMSGService.getPrompt(data);
-
+    async getReply(data: UltraMSGData, { prompt, isFromUser }: { isFromGroup: boolean, prompt: string, isFromUser: boolean }): Promise<string> {
         // if reply image
         const replyImage = this.ultraMSGService.getReplyImage(data);
         if (replyImage) {
