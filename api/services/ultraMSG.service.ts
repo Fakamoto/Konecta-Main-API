@@ -9,6 +9,19 @@ export const removeMultiSpaces = (str: string): string => {
     return str.replace(/\s+/g, ' ');
 }
 
+const getStringUntil = (str: string, until: string): string => {
+    return str.substring(0, str.indexOf(until));
+}
+
+export const containsAnyString = (str: string, substrings: string[]): boolean => {
+    return substrings.some((substring) => {
+        return getStringUntil(str, ':')
+            .split(' ')
+            .splice(0, 3)
+            .some((word) => word.toLowerCase().indexOf(substring) > -1);
+    });
+}
+
 export type UltraMSGData = {
     id: string;
     from: string;
@@ -66,7 +79,7 @@ export class UltraMSGService {
     }
 
     isAudio(data: UltraMSGData): boolean {
-        return data.type === 'ptt';
+        return data.type === 'ptt' || data.type === 'audio';
     }
 
     isImage(data: UltraMSGData): boolean {
@@ -88,7 +101,10 @@ export class UltraMSGService {
     }
 
     isImageGenerator(prompt: string): boolean {
-        return prompt.toLowerCase().startsWith('image');
+        return containsAnyString(prompt.toLowerCase(), [
+            'pic', 'photo', 'image', 'img',
+            'imagen', 'foto', 'fotos',
+        ]);
     }
 
     saveAudio(data: UltraMSGData): void {
@@ -171,4 +187,26 @@ export class UltraMSGService {
         });
     }
 
+    sendImage(urlOrBase64: string, to: string, caption: string = ''): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const options = {
+                method: 'POST',
+                url: 'https://api.ultramsg.com/instance26462/messages/image',
+                headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                form: {
+                    token: Config.ultraMSG.token,
+                    to,
+                    image: urlOrBase64,
+                    caption,
+                    referenceId: '',
+                    nocache: ''
+                }
+            };
+
+            request(options, function (error, response, body) {
+                if (error) return reject(error);
+                resolve(body);
+            });
+        });
+    }
 }

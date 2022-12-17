@@ -5,6 +5,7 @@ require('../config/loadEnvConfig');
 
 const config = {
     apiPort: process.env.PORT! || process.env.API_PORT!,
+    aiAPIUrl: process.env.AI_API_URL!,
     socketPort: process.env.SOCKET_PORT! || 5000,
     maxAudios: process.env.MAX_AUDIOS ? Number(process.env.MAX_AUDIOS) : 1000,
     maxImages: process.env.MAX_IMAGES ? Number(process.env.MAX_IMAGES) : 1000,
