@@ -1,6 +1,14 @@
 import Config from '../config';
 import request from 'request';
 
+const getContentTypeOfURl = (url: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        request.head(url, (err, res) => {
+            if (err) return reject(err);
+            resolve(res.headers['content-type']);
+        });
+    });
+}
 export const endsWith = (str: string, suffix: string): boolean => {
     return str.indexOf(suffix, str.length - suffix.length) !== -1;
 }
@@ -44,17 +52,6 @@ export type UltraMSGData = {
 export type SavedReply = { id: string, media: string }
 
 export class UltraMSGService {
-    // audios: {[id : string]: string} = {};
-    audios: SavedReply[] = [];
-    maxAudios: number;
-
-    images: SavedReply[] = [];
-    maxImages: number;
-
-    constructor() {
-        this.maxAudios = Config.maxAudios;
-        this.maxImages = Config.maxImages;
-    }
 
     getUserId(data: UltraMSGData): string {
         if (this.isFromGroup(data)) return data.author;
@@ -87,12 +84,22 @@ export class UltraMSGService {
     }
 
     // TODO: change this to Redis Chche.
-    isReplyImage(data: UltraMSGData): boolean {
-        return this.images.some((image) => image.id === data.id);
+    isReplyMedia(data: UltraMSGData): boolean {
+        return data.quotedMsg.media;
     }
 
-    isReplyAudio(data: UltraMSGData): boolean {
-        return this.audios.some((image) => image.id === data.id);
+    async isReplyImage(data: UltraMSGData): Promise<boolean> {
+        if (!this.isReplyMedia(data)) return false;
+
+        const contentType = await getContentTypeOfURl(data.quotedMsg.media)
+        return contentType === 'image/jpeg';
+    }
+
+    async isReplyAudio(data: UltraMSGData): Promise<boolean> {
+        if (!this.isReplyMedia(data)) return false;
+
+        const contentType = await getContentTypeOfURl(data.quotedMsg.media)
+        return contentType === 'audio/ogg; codecs=opus';
     }
 
     isReplyMessage(data: UltraMSGData): boolean {
@@ -105,24 +112,6 @@ export class UltraMSGService {
             'pic', 'photo', 'image', 'img',
             'imagen', 'foto', 'fotos',
         ]);
-    }
-
-    saveAudio(data: UltraMSGData): void {
-        this.audios.push({ id: data.id, media: data.media });
-
-        // Clean buffer
-        if (this.audios.length > this.maxAudios) {
-            this.audios.shift();
-        }
-    }
-
-    saveImage(data: UltraMSGData): void {
-        this.images.push({ id: data.id, media: data.media });
-
-        // Clean buffer
-        if (this.images.length > this.maxImages) {
-            this.images.shift();
-        }
     }
 
     isQuotingSomething(data: UltraMSGData): boolean {
@@ -153,14 +142,6 @@ export class UltraMSGService {
         return prompt.trim();
     }
 
-    getReplyImage(data: UltraMSGData): SavedReply | undefined {
-        return this.images.find((image) => image.id === data.quotedMsg.id);
-    }
-
-    getReplyAudio(data: UltraMSGData): SavedReply | undefined {
-        return this.audios.find((image) => image.id === data.quotedMsg.id);
-    }
-
     getReplyMessage(data: UltraMSGData): string {
         return data.quotedMsg ? data.quotedMsg.body : '';
     }
@@ -169,7 +150,7 @@ export class UltraMSGService {
         return new Promise((resolve, reject) => {
             const options = {
                 method: 'POST',
-                url: 'https://api.ultramsg.com/instance26462/messages/chat',
+                url: `https://api.ultramsg.com/${Config.ultraMSG.instance}/messages/chat`,
                 headers: { 'content-type': 'application/x-www-form-urlencoded' },
                 form: {
                     token: Config.ultraMSG.token,

@@ -49,6 +49,7 @@ const config = {
         testAccessToken: process.env.MP_TEST_ACCESS_TOKEN,
     },
     ultraMSG: {
+        instance: process.env.ULTRA_MSG_INSTANCE,
         token: process.env.ULTRA_MSG_TOKEN,
     }
 };

@@ -12,8 +12,6 @@ export class UltraMSGController {
         console.log(data);
 
         if(eventType === 'message_create') {
-            if (data.type === 'image') this.ultraMSGService.saveImage(data);
-            if (data.type === 'ott') this.ultraMSGService.saveAudio(data);
             res.status(OK).send();
             return;
         }
@@ -36,15 +34,7 @@ export class UltraMSGController {
 
         // Save if is Audio
         const isAudio = this.ultraMSGService.isAudio(data);
-        if (isAudio) {
-            this.ultraMSGService.saveAudio(data);
-        }
-
-        // Save if is Audio
         const isImage = this.ultraMSGService.isImage(data);
-        if (isImage) {
-            this.ultraMSGService.saveImage(data);
-        }
 
         // if (isFromUser && isImage) {
         //     res.status(OK).json({ message: 'From User Image' });
@@ -72,10 +62,10 @@ export class UltraMSGController {
 
     async getReply(data: UltraMSGData, { prompt, isFromGroup, isFromUser, isAudio, isImage }: { prompt: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message' }> {
         // if reply image
-        const replyImage = this.ultraMSGService.getReplyImage(data);
+        const replyImage = await this.ultraMSGService.isReplyImage(data);
         if (replyImage) {
             return {
-                data: await this.konectaAIApiService.generateImageFromImage(replyImage.media, prompt),
+                data: await this.konectaAIApiService.generateImageFromImage(data.quotedMsg.media, prompt),
                 type: 'message', // TODO: change to image
             }
         }
@@ -106,16 +96,16 @@ export class UltraMSGController {
         }
 
         // if reply audio from Group
-        const replyAudio = this.ultraMSGService.getReplyAudio(data);
+        const replyAudio = await  this.ultraMSGService.isReplyAudio(data);
         if (isFromGroup && replyAudio) {
             return {
-                data: await this.konectaAIApiService.transcriptAudio(replyAudio.media),
+                data: await this.konectaAIApiService.transcriptAudio(data.quotedMsg.media),
                 type: 'message',
             }
         }
         if (isFromUser && replyAudio) {
             return {
-                data: await this.konectaAIApiService.transcriptAudio(replyAudio.media),
+                data: await this.konectaAIApiService.transcriptAudio(data.quotedMsg.media),
                 type: 'message',
             }
         }
