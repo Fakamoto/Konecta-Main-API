@@ -18,7 +18,7 @@ export const removeMultiSpaces = (str: string): string => {
 }
 
 const getStringUntil = (str: string, until: string): string => {
-    return str.substring(0, str.indexOf(until));
+    return str.split(until)[0];
 }
 
 export const containsAnyString = (str: string, substrings: string[]): boolean => {
@@ -172,7 +172,7 @@ export class UltraMSGService {
         return new Promise((resolve, reject) => {
             const options = {
                 method: 'POST',
-                url: 'https://api.ultramsg.com/instance26462/messages/image',
+                url: `https://api.ultramsg.com/${Config.ultraMSG.instance}/messages/image`,
                 headers: { 'content-type': 'application/x-www-form-urlencoded' },
                 form: {
                     token: Config.ultraMSG.token,

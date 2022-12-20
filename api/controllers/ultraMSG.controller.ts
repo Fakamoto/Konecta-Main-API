@@ -97,16 +97,18 @@ export class UltraMSGController {
 
         // if reply audio from Group
         const replyAudio = await  this.ultraMSGService.isReplyAudio(data);
-        if (isFromGroup && replyAudio) {
-            return {
-                data: await this.konectaAIApiService.transcriptAudio(data.quotedMsg.media),
-                type: 'message',
+        if (replyAudio) {
+            if (isFromGroup) {
+                return {
+                    data: await this.konectaAIApiService.transcriptAudio(data.quotedMsg.media),
+                    type: 'message',
+                }
             }
-        }
-        if (isFromUser && replyAudio) {
-            return {
-                data: await this.konectaAIApiService.transcriptAudio(data.quotedMsg.media),
-                type: 'message',
+            if (isFromUser) {
+                return {
+                    data: await this.konectaAIApiService.transcriptAudio(data.quotedMsg.media),
+                    type: 'message',
+                }
             }
         }
 
