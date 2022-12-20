@@ -61,15 +61,6 @@ export class UltraMSGController {
     };
 
     async getReply(data: UltraMSGData, { prompt, isFromGroup, isFromUser, isAudio, isImage }: { prompt: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message' }> {
-        // if reply image
-        const replyImage = await this.ultraMSGService.isReplyImage(data);
-        if (replyImage) {
-            return {
-                data: await this.konectaAIApiService.generateImageFromImage(data.quotedMsg.media, prompt),
-                type: 'message', // TODO: change to image
-            }
-        }
-
         // Is a User generating an Image
         if (isFromUser && isImage) {
             return {
@@ -95,6 +86,24 @@ export class UltraMSGController {
             }
         }
 
+        // if start with image
+        const isImageGenerator = this.ultraMSGService.isImageGenerator(prompt);
+        if (isImageGenerator) {
+            return {
+                data: await this.konectaAIApiService.generateImageFromText(prompt),
+                type: 'image',
+            }
+        }
+
+        // if reply image
+        const replyImage = await this.ultraMSGService.isReplyImage(data);
+        if (replyImage) {
+            return {
+                data: await this.konectaAIApiService.generateImageFromImage(data.quotedMsg.media, prompt),
+                type: 'message', // TODO: change to image
+            }
+        }
+
         // if reply audio from Group
         const replyAudio = await  this.ultraMSGService.isReplyAudio(data);
         if (replyAudio) {
@@ -109,15 +118,6 @@ export class UltraMSGController {
                     data: await this.konectaAIApiService.transcriptAudio(data.quotedMsg.media),
                     type: 'message',
                 }
-            }
-        }
-
-        // if start with image
-        const isImageGenerator = this.ultraMSGService.isImageGenerator(prompt);
-        if (isImageGenerator) {
-            return {
-                data: await this.konectaAIApiService.generateImageFromText(prompt),
-                type: 'image',
             }
         }
 
