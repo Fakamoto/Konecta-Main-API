@@ -13,3 +13,4 @@ export { PythonService } from './python.service';
 export { TwoFAService } from './2fa.service';
 export { UltraMSGService } from './ultraMSG.service';
 export { KonectaAIApiService } from './konectaAIApi.service';
+export { AccountService } from './account.service';

@@ -30,6 +30,7 @@ import {
     TwoFAService,
     UltraMSGService,
     KonectaAIApiService,
+    AccountService,
 } from '../services';
 
 import {
@@ -95,6 +96,7 @@ injector.register({
     userSerializer: awilix.asClass(UserSerializer).singleton(),
     ultraMSGService: awilix.asClass(UltraMSGService).singleton(),
     konectaAIApiService: awilix.asClass(KonectaAIApiService).singleton(),
+    accountService: awilix.asClass(AccountService).singleton(),
 });
 
 // Inject Cron

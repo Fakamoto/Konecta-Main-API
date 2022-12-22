@@ -53,10 +53,14 @@ export type SavedReply = { id: string, media: string }
 
 export class UltraMSGService {
 
-    getUserId(data: UltraMSGData): string {
+    getPhone(data: UltraMSGData): string {
         if (this.isFromGroup(data)) return data.author;
 
         return data.from;
+    }
+
+    getName(data: UltraMSGData): string {
+        return data.pushname;
     }
 
     isFromGroup(data: UltraMSGData): boolean {

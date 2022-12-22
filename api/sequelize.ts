@@ -3,9 +3,13 @@ import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import cls from 'cls-hooked';
 import databaseConfig from '../config/database';
 import { User } from './models/user/user';
+import { Account } from './models/account/account';
+import { AccountRequests } from './models/account/accountRequests';
 
 export const SequelizeModels = [
     User,
+    Account,
+    AccountRequests,
 ];
 
 const CLS_NAMESPACE = 'default';
