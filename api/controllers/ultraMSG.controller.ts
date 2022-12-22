@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { OK } from 'http-status-codes';
 import { UltraMSGData, UltraMSGService } from '../services/ultraMSG.service';
 import { AccountService, KonectaAIApiService } from '../services';
-import { Account } from '../models/account/account';
 import { LimitRequestError } from '../helpers/errors/limitRequestError';
 
 export class UltraMSGController {
@@ -27,8 +26,9 @@ export class UltraMSGController {
             const isFromUser = this.ultraMSGService.isFromUser(data);
             const isMentioned = this.ultraMSGService.isMentioned(data);
 
+            const phone = this.ultraMSGService.getPhone(data);
             // Debugger
-            if (data.from !== '5492364552179@c.us' && data.from !== '120363027952423923@g.us') {
+            if (!['5492364552179@c.us', '34722847252@c.us', '5491122592094@c.us', '5491123500639@c.us'].includes(phone)) {
                 res.status(OK).send();
                 return;
             }
