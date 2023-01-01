@@ -1,7 +1,5 @@
 import { Router } from 'express';
-import {MercadoPagoController, UltraMSGController} from '../controllers';
-import { validateBodyParams } from '../middlewares';
-import { WebhookMercadoPagoParams } from '../mappers';
+import { UltraMSGController } from '../controllers';
 import transactionMiddleware from '../middlewares/sequelizeTransactionMiddleware';
 
 const ultraMSGRouter = (ultraMSGController: UltraMSGController): Router => {

@@ -26,12 +26,12 @@ export class UltraMSGController {
             const isFromUser = this.ultraMSGService.isFromUser(data);
             const isMentioned = this.ultraMSGService.isMentioned(data);
 
-            const phone = this.ultraMSGService.getPhone(data);
             // Debugger
-            if (!['5492364552179@c.us', '34722847252@c.us', '5491122592094@c.us', '5491123500639@c.us'].includes(phone)) {
-                res.status(OK).send();
-                return;
-            }
+            // const phone = this.ultraMSGService.getPhone(data);
+            // if (!['5492364552179@c.us', '34722847252@c.us', '5491122592094@c.us', '5491123500639@c.us'].includes(phone)) {
+            //     res.status(OK).send();
+            //     return;
+            // }
 
             // Leave if from group and not mentioned
             if (isFromGroup && !isMentioned) {
@@ -39,14 +39,8 @@ export class UltraMSGController {
                 return;
             }
 
-            // Save if is Audio
             const isAudio = this.ultraMSGService.isAudio(data);
             const isImage = this.ultraMSGService.isImage(data);
-
-            // if (isFromUser && isImage) {
-            //     res.status(OK).json({ message: 'From User Image' });
-            //     return;
-            // }
 
             // get Reply
             const prompt = this.ultraMSGService.getPrompt(data);
