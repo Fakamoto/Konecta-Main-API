@@ -44,7 +44,7 @@ export class KonectaAIApiService {
         const { data } = await this.httpClient.post('/api/generate-img', { prompt });
 
         await this.accountService.addImageGeneratorLimitRequest(account, { tokens: 0 });
-        return data.media;
+        return data.base64;
     }
 
     async generateImageFromImage(account: Account, imageUrl: string, prompt: string): Promise<string> {
