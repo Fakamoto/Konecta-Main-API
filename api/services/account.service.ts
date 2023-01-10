@@ -25,8 +25,14 @@ export class AccountService {
     };
 
     hasLimit = async (accountId: number, limit: number, type: AccountRequestType): Promise<boolean> => {
-        const accountRequests = await AccountRequests.findAll({ where: { accountId: accountId, type } });
-        return accountRequests.length < limit;
+        const requests = await AccountRequests.findAll({ where: { accountId, type } });
+
+        if (type === 'textGenerator') {
+            const sum = requests.reduce((acc: number, request: AccountRequests) => acc + request.tokens, 0);
+            return sum < limit;
+        }
+
+        return requests.length < limit;
     }
 
     addTextGeneratorRequest= async (account: Account, accountRequest: CreateAccountRequestParams): Promise<AccountRequests> => {
