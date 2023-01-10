@@ -20,7 +20,10 @@ export class KonectaAIApiService {
             if (!hasLimit) throw new LimitRequestError(`${account.textGeneratorLimit} text generated`);
         }
 
-        const { data } = await this.httpClient.post('/api/generate-text', { prompt });
+        const hasSymbolInLastChar = prompt[prompt.length - 1].match(/[a-zA-Z0-9]/);
+        const serializedPrompt = hasSymbolInLastChar ? `${prompt}.` : prompt;
+
+        const { data } = await this.httpClient.post('/api/generate-text', { prompt: serializedPrompt });
         await this.accountService.addTextGeneratorRequest(account, { tokens: data.tokens });
 
         return data.text;
@@ -37,9 +40,11 @@ export class KonectaAIApiService {
         return text;
     }
 
-    async generateImageFromText(account: Account, prompt: string): Promise<string> {
-        const hasLimit = await this.accountService.hasLimit(account.id, account.imageGeneratorLimit, 'imageGenerator');
-        if (!hasLimit) throw new LimitRequestError(`${account.imageGeneratorLimit} images generated`);
+    async generateImageFromText(account: Account, prompt: string, skipLimit = false): Promise<string> {
+        if (!skipLimit) {
+            const hasLimit = await this.accountService.hasLimit(account.id, account.imageGeneratorLimit, 'imageGenerator');
+            if (!hasLimit) throw new LimitRequestError(`${account.imageGeneratorLimit} images generated`);
+        }
 
         const { data } = await this.httpClient.post('/api/generate-img', { prompt });
 

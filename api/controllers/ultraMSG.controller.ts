@@ -70,7 +70,7 @@ export class UltraMSGController {
         }
     };
 
-    async getReply(data: UltraMSGData, { prompt, isFromGroup, isFromUser, isAudio, isImage }: { prompt: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message' }> {
+    async getReply(data: UltraMSGData, { prompt, isFromUser, isAudio, isImage }: { prompt: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message' }> {
         const phone = this.ultraMSGService.getPhone(data);
         let account = await this.accountService.findByPhone(phone)
         if (!account) account = await this.accountService.create({ phone });
@@ -100,15 +100,6 @@ export class UltraMSGController {
             }
         }
 
-        // if start with image
-        const isImageGenerator = this.ultraMSGService.isImageGenerator(prompt);
-        if (isImageGenerator) {
-            return {
-                data: await this.konectaAIApiService.generateImageFromText(account, prompt),
-                type: 'image',
-            }
-        }
-
         // if reply image
         const replyImage = await this.ultraMSGService.isReplyImage(data);
         if (replyImage) {
@@ -121,17 +112,36 @@ export class UltraMSGController {
         // if reply audio from Group
         const replyAudio = await  this.ultraMSGService.isReplyAudio(data);
         if (replyAudio) {
-            if (isFromGroup) {
+            const transcription = await this.konectaAIApiService.transcriptAudio(account, data.quotedMsg.media);
+            if (prompt.length > 0) {
+                const text = `${prompt}: ${transcription}`;
+
+                const isImageGenerator = this.ultraMSGService.isImageGenerator(prompt);
+                if (isImageGenerator) {
+                    return {
+                        data: await this.konectaAIApiService.generateImageFromText(account, text, true),
+                        type: 'image',
+                    }
+                }
+
                 return {
-                    data: await this.konectaAIApiService.transcriptAudio(account, data.quotedMsg.media),
+                    data: await this.konectaAIApiService.generateText(account, text, true),
                     type: 'message',
                 }
             }
-            if (isFromUser) {
-                return {
-                    data: await this.konectaAIApiService.transcriptAudio(account, data.quotedMsg.media),
-                    type: 'message',
-                }
+
+            return {
+                data: transcription,
+                type: 'message',
+            }
+        }
+
+        // if start with image
+        const isImageGenerator = this.ultraMSGService.isImageGenerator(prompt);
+        if (isImageGenerator) {
+            return {
+                data: await this.konectaAIApiService.generateImageFromText(account, prompt),
+                type: 'image',
             }
         }
 
