@@ -114,7 +114,7 @@ export class UltraMSGController {
         if (replyAudio) {
             const transcription = await this.konectaAIApiService.transcriptAudio(account, data.quotedMsg.media);
             const isTranscriptionImageGenerator = this.ultraMSGService.isImageGenerator(transcription);
-            if (prompt.length > 0 || isTranscriptionImageGenerator) {
+            if (prompt.length > 0) {
                 const text = `${prompt}: ${transcription}`;
 
                 const isImageGenerator = this.ultraMSGService.isImageGenerator(prompt);
