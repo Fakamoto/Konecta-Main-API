@@ -13,6 +13,8 @@ const rootRouter = (
     const router = Router();
     // Routes without user
     router.get('/', rootController.root);
+    router.post('/stripe/webhook', rootController.stripeWebhook);
+    router.post('/stripe/link', rootController.createStripeLink);
     router.get('/status', rootController.root);
 
     // Routes without loggedUser

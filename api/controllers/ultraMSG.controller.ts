@@ -3,6 +3,8 @@ import { OK } from 'http-status-codes';
 import { UltraMSGData, UltraMSGService } from '../services/ultraMSG.service';
 import { AccountService, KonectaAIApiService } from '../services';
 import { LimitRequestError } from '../helpers/errors/limitRequestError';
+import {StripeService} from "../services/stripe.service";
+import config from "../config";
 
 export class UltraMSGController {
 
@@ -10,12 +12,14 @@ export class UltraMSGController {
         private ultraMSGService: UltraMSGService,
         private konectaAIApiService: KonectaAIApiService,
         private accountService: AccountService,
+
+        private stripeService: StripeService,
     ) {}
 
     webhook = async (req: Request, res: Response): Promise<void> => {
         const { data, event_type: eventType }: { data : UltraMSGData, event_type: string } = req.body;
         try {
-            console.log(data);
+            // console.log(data);
 
             if(eventType === 'message_create') {
                 res.status(OK).send();
@@ -61,12 +65,21 @@ export class UltraMSGController {
             res.status(OK).json({ message: 'Konecta Main API' });
         } catch (e) {
             if (e instanceof LimitRequestError) {
+                // const account = await this.accountService.findByPhone(data.from);
+                // if (account) {}
+                const url = await this.stripeService.createStripeLink(data.from, config.stripe.proPrice);
                 const name = this.ultraMSGService.getName(data);
-                await this.ultraMSGService.sendMessage(`*${name}* you have reached the limit of *${e.message}*`, data.from);
+                await this.ultraMSGService.sendMessage(
+                    `*${name}* You have reached the limit of this *free trial*! \nBut don't worry, keep enjoying this service for only *$3/month* with our Lite Subscription! \n${url}`,
+                    data.from,
+                );
 
                 res.status(OK).json({ message: 'Limit reached' });
                 return;
             }
+
+            console.error(e);
+            res.status(OK).json({ message: 'Something happened' });
         }
     };
 

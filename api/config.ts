@@ -5,6 +5,7 @@ require('../config/loadEnvConfig');
 
 const config = {
     apiPort: process.env.PORT! || process.env.API_PORT!,
+    apiHost: process.env.HOST!,
     aiAPIUrl: process.env.AI_API_URL!,
     socketPort: process.env.SOCKET_PORT! || 5000,
     maxAudios: process.env.MAX_AUDIOS ? Number(process.env.MAX_AUDIOS) : 1000,
@@ -51,7 +52,13 @@ const config = {
     ultraMSG: {
         instance: process.env.ULTRA_MSG_INSTANCE,
         token: process.env.ULTRA_MSG_TOKEN,
-    }
+    },
+
+    stripe: {
+        secret: process.env.STRIPE_SECRET!,
+        proPrice: process.env.STRIPE_PRO_PRICE!,
+        enterprisePrice: process.env.STRIPE_ENTERPRISE_PRICE!,
+    },
 };
 
 export default config;

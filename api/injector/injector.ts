@@ -43,6 +43,7 @@ import {
 import {
     UserSerializer
 } from '../serializers';
+import {StripeService} from "../services/stripe.service";
 
 const injector = awilix.createContainer({
     injectionMode: awilix.InjectionMode.CLASSIC,
@@ -97,6 +98,7 @@ injector.register({
     ultraMSGService: awilix.asClass(UltraMSGService).singleton(),
     konectaAIApiService: awilix.asClass(KonectaAIApiService).singleton(),
     accountService: awilix.asClass(AccountService).singleton(),
+    stripeService: awilix.asClass(StripeService).singleton(),
 });
 
 // Inject Cron

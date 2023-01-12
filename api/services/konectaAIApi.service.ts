@@ -16,7 +16,7 @@ export class KonectaAIApiService {
 
     async generateText(account: Account, prompt: string, skipLimit = false): Promise<string> {
         if (!skipLimit) {
-            const hasLimit = await this.accountService.hasLimit(account.id, account.textGeneratorLimit, 'textGenerator');
+            const hasLimit = await this.accountService.hasLimit(account.id, account.phone, account.purchaseDate, account.textGeneratorLimit, 'textGenerator');
             if (!hasLimit) throw new LimitRequestError(`${account.textGeneratorLimit} text generated`);
         }
 
@@ -30,7 +30,7 @@ export class KonectaAIApiService {
     }
 
     async transcriptAudio(account: Account, url: string): Promise<string> {
-        const hasLimit = await this.accountService.hasLimit(account.id, account.audioTranscriptionLimit, 'audioTranscription');
+        const hasLimit = await this.accountService.hasLimit(account.id, account.phone, account.purchaseDate, account.audioTranscriptionLimit, 'audioTranscription');
         if (!hasLimit) throw new LimitRequestError(`${account.audioTranscriptionLimit} audios transcribed`);
 
         const { data } = await this.httpClient.post('/api/transcribe-audio', { url });
@@ -42,7 +42,7 @@ export class KonectaAIApiService {
 
     async generateImageFromText(account: Account, prompt: string, skipLimit = false): Promise<string> {
         if (!skipLimit) {
-            const hasLimit = await this.accountService.hasLimit(account.id, account.imageGeneratorLimit, 'imageGenerator');
+            const hasLimit = await this.accountService.hasLimit(account.id, account.phone, account.purchaseDate, account.imageGeneratorLimit, 'imageGenerator');
             if (!hasLimit) throw new LimitRequestError(`${account.imageGeneratorLimit} images generated`);
         }
 
@@ -53,7 +53,7 @@ export class KonectaAIApiService {
     }
 
     async generateImageFromImage(account: Account, imageUrl: string, prompt: string): Promise<string> {
-        const hasLimit = await this.accountService.hasLimit(account.id, account.imageGeneratorLimit, 'imageGenerator');
+        const hasLimit = await this.accountService.hasLimit(account.id, account.phone, account.purchaseDate, account.imageGeneratorLimit, 'imageGenerator');
         if (!hasLimit) throw new LimitRequestError(`${account.imageGeneratorLimit} images generated`);
 
         console.log(imageUrl, prompt);

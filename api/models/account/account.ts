@@ -16,7 +16,7 @@ export class Account extends Model<Account> {
     @Column({})
     phone!: string;
 
-    @Default(5)
+    @Default(1500)
     @Column({})
     textGeneratorLimit!: number;
 
@@ -27,6 +27,12 @@ export class Account extends Model<Account> {
     @Default(5)
     @Column({})
     audioTranscriptionLimit!: number;
+
+    @Column
+    purchaseDate!: Date;
+
+    @Column
+    paymentId!: string;
 
     @CreatedAt
     @Column
