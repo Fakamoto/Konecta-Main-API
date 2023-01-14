@@ -72,7 +72,7 @@ export class UltraMSGController {
                 const name = this.ultraMSGService.getName(data);
                 await this.ultraMSGService.sendMessage(
                     `*${name}* You have reached the limit of this *free trial*! \nBut don't worry, keep enjoying this service for only *$3/month* with our Lite Subscription! \n${url}`,
-                    data.from,
+                    phone,
                 );
 
                 res.status(OK).json({ message: 'Limit reached' });
