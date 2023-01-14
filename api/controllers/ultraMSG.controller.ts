@@ -70,6 +70,11 @@ export class UltraMSGController {
                 // if (account) {}
                 const url = await this.stripeService.createStripeLink(phone, config.stripe.proPrice);
                 const name = this.ultraMSGService.getName(data);
+
+                await this.ultraMSGService.sendMessage(
+                    `*${name}* You have reached the limit of this *free trial*.`,
+                    data.from,
+                );
                 await this.ultraMSGService.sendMessage(
                     `*${name}* You have reached the limit of this *free trial*! \nBut don't worry, keep enjoying this service for only *$3/month* with our Lite Subscription! \n${url}`,
                     phone,
