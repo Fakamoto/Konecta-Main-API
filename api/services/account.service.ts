@@ -61,8 +61,10 @@ export class AccountService {
         phone: string,
         { textGeneratorLimit, audioTranscriptionLimit, imageGeneratorLimit }: PlanLimits
     ): Promise<Account> => {
-        const account: Account = await Account.findOne({ where: { phone } });
-        if (!account) throw new Error('Account not found');
+        let account: Account = await Account.findOne({ where: { phone } });
+        if (!account) {
+            account = await this.create({ phone })
+        }
 
         account.textGeneratorLimit = textGeneratorLimit;
         account.audioTranscriptionLimit = audioTranscriptionLimit;

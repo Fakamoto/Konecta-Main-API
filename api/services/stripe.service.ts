@@ -42,14 +42,19 @@ export class StripeService {
     }
     webhookHandler = async (type: string, data: Stripe.Event.Data): Promise<void> => {
         const fullObject: Stripe.Event.Data.Object = data.object;
-        const { metadata, id: paymentId, amount_total: price } = fullObject as any;
+        const { metadata, id: paymentId, amount_total: price, customer_details: customer } = fullObject as any;
         // console.log(type, metadata, price);
 
         if (type === 'checkout.session.completed') {
+            let phone = metadata.phone;
+            if (customer.phone) {
+                phone = `${customer.phone}@c.us`;
+            }
+
             // TODO: Payment success
             await this.accountService.setPlan(
                 paymentId,
-                metadata.phone,
+                phone,
                 plans[price],
             );
             this.logger.debug(`Payment success for ${metadata?.phone}`);
