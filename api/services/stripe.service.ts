@@ -28,7 +28,7 @@ export class StripeService {
         const { url } = await this.stripe.paymentLinks.create({
             line_items: [{ price, quantity: 1 }],
             after_completion: { type: 'redirect', redirect: { url: `${config.apiHost}/api` } },
-            allow_promotion_codes: false,
+            allow_promotion_codes: true,
             custom_text: {
                 submit: { message: 'SUBMIT' },
             },
