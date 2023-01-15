@@ -4,46 +4,33 @@ import SocketApp from '../socket';
 
 import { validateUserJWT } from '../middlewares';
 
-import {
-    ExampleCron,
-} from '../crons';
+import { ExampleCron, } from '../crons';
+
+import { RootRouter, UltraMSGRouter, UsersRouter, WhatsappRouter, } from '../routes';
 
 import {
-    RootRouter,
-    UsersRouter,
-    WhatsappRouter,
-    UltraMSGRouter,
-} from '../routes';
-
-import {
+    AccountService,
     AuthService,
     EmailService,
     JwtService,
+    KonectaAIApiService,
     PdfService,
     PermissionsService,
+    PythonService,
     QRService,
     S3Service,
-    UsersService,
-    WhatsappService,
     TemplateService,
-    PythonService,
     TwoFAService,
     UltraMSGService,
-    KonectaAIApiService,
-    AccountService,
+    UsersService,
+    WhatsappService,
 } from '../services';
 
-import {
-    RootController,
-    UsersController,
-    WhatsappController,
-    UltraMSGController
-} from '../controllers';
+import { RootController, UltraMSGController, UsersController, WhatsappController } from '../controllers';
 
-import {
-    UserSerializer
-} from '../serializers';
-import {StripeService} from "../services/stripe.service";
+import { UserSerializer } from '../serializers';
+import { StripeService } from '../services/stripe.service';
+import { OpenaiService } from '../services/openai.service';
 
 const injector = awilix.createContainer({
     injectionMode: awilix.InjectionMode.CLASSIC,
@@ -99,6 +86,7 @@ injector.register({
     konectaAIApiService: awilix.asClass(KonectaAIApiService).singleton(),
     accountService: awilix.asClass(AccountService).singleton(),
     stripeService: awilix.asClass(StripeService).singleton(),
+    openaiService: awilix.asClass(OpenaiService).singleton(),
 });
 
 // Inject Cron

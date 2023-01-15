@@ -3,12 +3,16 @@ import Config from '../config';
 import { Account } from '../models/account/account';
 import { AccountService } from './account.service';
 import { LimitRequestError } from '../helpers/errors/limitRequestError';
+import { OpenaiService } from './openai.service';
 
 export class KonectaAIApiService {
 
     httpClient: AxiosInstance;
 
-    constructor(private accountService: AccountService) {
+    constructor(
+        private accountService: AccountService,
+        private openaiService: OpenaiService
+    ) {
         this.httpClient = axios.create({
             baseURL: Config.aiAPIUrl,
         })
@@ -23,10 +27,10 @@ export class KonectaAIApiService {
         const hasSymbolInLastChar = prompt[prompt.length - 1].match(/[a-zA-Z0-9]/);
         const serializedPrompt = hasSymbolInLastChar ? `${prompt}.` : prompt;
 
-        const { data } = await this.httpClient.post('/api/generate-text', { prompt: serializedPrompt });
-        await this.accountService.addTextGeneratorRequest(account, { tokens: data.tokens });
+        const { text, tokens } = await this.openaiService.completion(serializedPrompt);
+        await this.accountService.addTextGeneratorRequest(account, { tokens: tokens });
 
-        return data.text;
+        return text;
     }
 
     async transcriptAudio(account: Account, url: string): Promise<string> {
