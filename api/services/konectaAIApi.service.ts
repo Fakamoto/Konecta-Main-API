@@ -62,8 +62,10 @@ export class KonectaAIApiService {
 
         console.log(imageUrl, prompt);
 
+        const { data } = await this.httpClient.post('/api/generate-img2img', { prompt, imageUrl });
+
         await this.accountService.addImageGeneratorLimitRequest(account, { tokens: 0 });
-        return ('Generate image from image not implemented yet.');
+        return data.base64;
     }
 
 }
