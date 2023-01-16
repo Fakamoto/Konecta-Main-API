@@ -3,7 +3,7 @@ import { OK } from 'http-status-codes';
 import { UltraMSGData, UltraMSGService } from '../services/ultraMSG.service';
 import { AccountService, KonectaAIApiService } from '../services';
 import { LimitRequestError } from '../helpers/errors/limitRequestError';
-import {StripeService} from "../services/stripe.service";
+import { StripeService } from "../services/stripe.service";
 import config from "../config";
 
 export class UltraMSGController {
@@ -14,14 +14,14 @@ export class UltraMSGController {
         private accountService: AccountService,
 
         private stripeService: StripeService,
-    ) {}
+    ) { }
 
     webhook = async (req: Request, res: Response): Promise<void> => {
-        const { data, event_type: eventType }: { data : UltraMSGData, event_type: string } = req.body;
+        const { data, event_type: eventType }: { data: UltraMSGData, event_type: string } = req.body;
         try {
             // console.log(data);
 
-            if(eventType === 'message_create') {
+            if (eventType === 'message_create') {
                 res.status(OK).send();
                 return;
             }
@@ -129,12 +129,12 @@ export class UltraMSGController {
         }
 
         // if reply audio from Group
-        const replyAudio = await  this.ultraMSGService.isReplyAudio(data);
+        const replyAudio = await this.ultraMSGService.isReplyAudio(data);
         if (replyAudio) {
             const transcription = await this.konectaAIApiService.transcriptAudio(account, data.quotedMsg.media);
             const isTranscriptionImageGenerator = this.ultraMSGService.isImageGenerator(transcription);
             if (prompt.length > 0) {
-                const text = `${prompt}: ${transcription}`;
+                const text = `${prompt}: "${transcription}"`;
 
                 const isImageGenerator = this.ultraMSGService.isImageGenerator(prompt);
                 if (isImageGenerator || isTranscriptionImageGenerator) {
