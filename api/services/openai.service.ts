@@ -10,7 +10,7 @@ export class OpenaiService {
     async completion(prompt: string): Promise<{ text: string, tokens: number }> {
         const completion = await this.openai.createCompletion({
             model: 'text-davinci-003',
-            prompt: prompt,
+            prompt: "hola mi nobre es pepe",
             temperature: 0.5,
             max_tokens: 500,
             top_p: 1,
