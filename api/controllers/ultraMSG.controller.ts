@@ -98,7 +98,7 @@ export class UltraMSGController {
         if (isFromUser && isImage) {
             return {
                 data: await this.konectaAIApiService.generateImageFromImage(account, data.media, prompt),
-                type: 'message', // TODO: change to image
+                type: 'image', // TODO: change to image
             }
         }
 
@@ -124,7 +124,7 @@ export class UltraMSGController {
         if (replyImage) {
             return {
                 data: await this.konectaAIApiService.generateImageFromImage(account, data.quotedMsg.media, prompt),
-                type: 'message', // TODO: change to image
+                type: 'image', // TODO: change to image
             }
         }
 
