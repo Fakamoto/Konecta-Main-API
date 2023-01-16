@@ -10,12 +10,13 @@ export class OpenaiService {
     async completion(prompt: string): Promise<{ text: string, tokens: number }> {
         const completion = await this.openai.createCompletion({
             model: 'text-davinci-003',
-            prompt: "hola mi nobre es pepe",
+            prompt: `The following is a conversation of a Whatsapp chatbot powered by AI called "Konecta" and a User. "Konecta" will reply in any language that the User is talking in. "Konecta" is clever, verbose, and helpful. "Konecta" mainly speaks in spanish and english\n\nUser: "${prompt}".\nKonecta:`,
             temperature: 0.5,
             max_tokens: 500,
             top_p: 1,
             frequency_penalty: 0.5,
             presence_penalty: 0,
+            stop: ['Konecta:']
         });
 
         console.log(completion.data.choices[0].text);
