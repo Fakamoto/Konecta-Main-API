@@ -58,6 +58,7 @@ export class AccountService {
     }
 
     setPlan = async (
+        subscriptionId: string,
         paymentId: string,
         phone: string,
         planName: string,
@@ -69,6 +70,7 @@ export class AccountService {
         }
 
         account.planName = planName;
+        account.subscriptionId = subscriptionId;
         account.textGeneratorLimit = textGeneratorLimit;
         account.audioTranscriptionLimit = audioTranscriptionLimit;
         account.imageGeneratorLimit = imageGeneratorLimit;

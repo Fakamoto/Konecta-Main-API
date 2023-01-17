@@ -3,8 +3,7 @@ import { OK } from 'http-status-codes';
 import { UltraMSGData, UltraMSGService } from '../services/ultraMSG.service';
 import { AccountService, KonectaAIApiService } from '../services';
 import { LimitRequestError } from '../helpers/errors/limitRequestError';
-import {BASIC_PLAN, ENTERPRISE_PLAN, StripeService} from "../services/stripe.service";
-import config from "../config";
+import { BASIC_PLAN, ENTERPRISE_PLAN, StripeService } from '../services/stripe.service';
 
 export class UltraMSGController {
 

@@ -16,7 +16,7 @@ export class OpenaiService {
             top_p: 1,
             frequency_penalty: 0.5,
             presence_penalty: 0,
-            stop: ['Konecta:']
+            stop: ['Konecta:', 'User:']
         });
 
         console.log(completion.data.choices[0].text);

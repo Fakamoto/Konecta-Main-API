@@ -67,7 +67,7 @@ export class StripeService {
     }
     webhookHandler = async (type: string, data: Stripe.Event.Data): Promise<void> => {
         const fullObject: Stripe.Event.Data.Object = data.object;
-        const { metadata, id: paymentId, amount_total: price, customer_details: customer } = fullObject as any;
+        const { metadata, subscription: subscriptionId, id: paymentId, amount_total: price, customer_details: customer } = fullObject as any;
         // console.log(type, metadata, price);
 
         if (type === 'checkout.session.completed') {
@@ -76,14 +76,22 @@ export class StripeService {
                 phone = `${customer.phone}@c.us`;
             }
 
+            const account = await this.accountService.findByPhone(phone);
+
             // TODO: Payment success
             await this.accountService.setPlan(
+                subscriptionId,
                 paymentId,
                 phone,
                 metadata.planName,
                 plans[price],
             );
             this.logger.debug(`Payment success for ${metadata?.phone}`);
+
+            await this.stripe.subscriptions.cancel(account.subscriptionId)
+                .then((data) => {
+                    console.log(data);
+                });
 
             await this.ultraMSGService.sendMessage(
                 'Congratulations! You have successfully upgrade your plan to "Lite Subscription"! If you want to cancel your subscription, you can do it sending /cancel in this private conversation.',

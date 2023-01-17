@@ -19,6 +19,9 @@ export class Account extends Model<Account> {
     @Column({})
     planName!: string;
 
+    @Column({})
+    subscriptionId!: string;
+
     @Default(1500)
     @Column({})
     textGeneratorLimit!: number;
