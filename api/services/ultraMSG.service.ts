@@ -129,13 +129,6 @@ export class UltraMSGService {
     getPrompt(data: UltraMSGData): string {
         let prompt = data.body;
 
-        // Concat if mention something;
-        const isQuotingSomething = this.isQuotingSomething(data);
-        if (isQuotingSomething) {
-            const quotedMsg = this.removeMentions(data.quotedMsg.body);
-            prompt += `: ${quotedMsg}`;
-        }
-
         // Remove mentions from message;
         prompt = this.removeMentions(prompt);
 

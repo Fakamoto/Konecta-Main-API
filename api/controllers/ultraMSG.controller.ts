@@ -47,7 +47,8 @@ export class UltraMSGController {
 
             // get Reply
             const prompt = this.ultraMSGService.getPrompt(data);
-            const { data: reply, type } = await this.getReply(data, { prompt, isFromGroup, isFromUser, isAudio, isImage });
+            const quotaMessage = this.ultraMSGService.getReplyMessage(data);
+            const { data: reply, type } = await this.getReply(data, { prompt, quotaMessage, isFromGroup, isFromUser, isAudio, isImage });
 
             const formattedReply = reply
                 .replace('conecta', 'Konecta')
@@ -95,7 +96,7 @@ export class UltraMSGController {
         }
     };
 
-    async getReply(data: UltraMSGData, { prompt, isFromUser, isAudio, isImage }: { prompt: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message' }> {
+    async getReply(data: UltraMSGData, { prompt, quotaMessage, isFromUser, isAudio, isImage }: { prompt: string, quotaMessage: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message' }> {
         const phone = this.ultraMSGService.getPhone(data);
         let account = await this.accountService.findByPhone(phone)
         if (!account) account = await this.accountService.create({ phone });
@@ -120,7 +121,7 @@ export class UltraMSGController {
             }
 
             return {
-                data: await this.konectaAIApiService.generateText(account, audioTranscription, true),
+                data: await this.konectaAIApiService.generateText(account, audioTranscription, quotaMessage, true),
                 type: 'message',
             }
         }
@@ -151,7 +152,7 @@ export class UltraMSGController {
                 }
 
                 return {
-                    data: await this.konectaAIApiService.generateText(account, text, true),
+                    data: await this.konectaAIApiService.generateText(account, text, quotaMessage, true),
                     type: 'message',
                 }
             }
@@ -173,7 +174,7 @@ export class UltraMSGController {
 
         // else transcribe text
         return {
-            data: await this.konectaAIApiService.generateText(account, prompt),
+            data: await this.konectaAIApiService.generateText(account, prompt, quotaMessage),
             type: 'message',
         };
     }

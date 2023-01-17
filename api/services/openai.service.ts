@@ -7,16 +7,23 @@ export class OpenaiService {
     });
     openai = new OpenAIApi(this.configuration);
 
-    async completion(prompt: string): Promise<{ text: string, tokens: number }> {
+    async completion(prompt: string, mentioned?: string): Promise<{ text: string, tokens: number }> {
+        // let finalPrompt = 'The following is a conversation of a Whatsapp chatbot powered by AI called "Konecta" and a User. "Konecta" will reply in any language that the User is talking in. "Konecta" is clever, verbose, and helpful. "Konecta" mainly speaks in spanish and english'
+        // if (mentioned) finalPrompt += `\n\nQuote: ${mentioned}`;
+        // finalPrompt+= `\n\nUser: ${prompt}`;
+
+        let finalPrompt = prompt
+        if (mentioned) finalPrompt += `: ${mentioned}`;
+
         const completion = await this.openai.createCompletion({
             model: 'text-davinci-003',
-            prompt: `The following is a conversation of a Whatsapp chatbot powered by AI called "Konecta" and a User. "Konecta" will reply in any language that the User is talking in. "Konecta" is clever, verbose, and helpful. "Konecta" mainly speaks in spanish and english\n\nUser: "${prompt}".\nKonecta:`,
+            prompt: `${finalPrompt}\n\nKonecta:`,
             temperature: 0.5,
             max_tokens: 500,
             top_p: 1,
             frequency_penalty: 0.5,
             presence_penalty: 0,
-            stop: ['Konecta:', 'User:']
+            stop: ['Konecta:']
         });
 
         console.log(completion.data.choices[0].text);

@@ -18,16 +18,17 @@ export class KonectaAIApiService {
         })
     }
 
-    async generateText(account: Account, prompt: string, skipLimit = false): Promise<string> {
+    async generateText(account: Account, prompt: string, quoteMessage?: string, skipLimit = false): Promise<string> {
         if (!skipLimit) {
             const hasLimit = await this.accountService.hasLimit(account.id, account.phone, account.purchaseDate, account.textGeneratorLimit, 'textGenerator');
             if (!hasLimit) throw new LimitRequestError(`${account.textGeneratorLimit} text generated`);
         }
 
-        const hasSymbolInLastChar = prompt[prompt.length - 1].match(/[a-zA-Z0-9]/);
-        const serializedPrompt = hasSymbolInLastChar ? `${prompt}.` : prompt;
+        const serializedPrompt = prompt;
+        // const hasSymbolInLastChar = prompt[prompt.length - 1].match(/[a-zA-Z0-9]/);
+        // const serializedPrompt = hasSymbolInLastChar ? `${prompt}.` : prompt;
 
-        const { text, tokens } = await this.openaiService.completion(serializedPrompt);
+        const { text, tokens } = await this.openaiService.completion(serializedPrompt, quoteMessage);
         await this.accountService.addTextGeneratorRequest(account, { tokens: tokens });
 
         return text;
