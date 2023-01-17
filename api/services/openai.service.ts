@@ -12,8 +12,8 @@ export class OpenaiService {
         // if (mentioned) finalPrompt += `\n\nQuote: ${mentioned}`;
         // finalPrompt+= `\n\nUser: ${prompt}`;
 
-        let finalPrompt = prompt
-        if (mentioned) finalPrompt += `: ${mentioned}`;
+        let finalPrompt = `${prompt}\n\n`;
+        if (mentioned) finalPrompt += `: "${mentioned}"`;
 
         const completion = await this.openai.createCompletion({
             model: 'text-davinci-003',
