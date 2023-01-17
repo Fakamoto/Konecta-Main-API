@@ -28,6 +28,7 @@ export class AccountService {
     };
 
     hasLimit = async (accountId: number, phone: string, purchaseDate: Date, limit: number, type: AccountRequestType): Promise<boolean> => {
+        if ( limit === -1) return true;
         const purchaseMoment = moment(purchaseDate);
         const daysPurchase = moment().diff(purchaseMoment, 'days');
         if (daysPurchase >= 35) {
@@ -59,6 +60,7 @@ export class AccountService {
     setPlan = async (
         paymentId: string,
         phone: string,
+        planName: string,
         { textGeneratorLimit, audioTranscriptionLimit, imageGeneratorLimit }: PlanLimits
     ): Promise<Account> => {
         let account: Account = await Account.findOne({ where: { phone } });
@@ -66,6 +68,7 @@ export class AccountService {
             account = await this.create({ phone })
         }
 
+        account.planName = planName;
         account.textGeneratorLimit = textGeneratorLimit;
         account.audioTranscriptionLimit = audioTranscriptionLimit;
         account.imageGeneratorLimit = imageGeneratorLimit;

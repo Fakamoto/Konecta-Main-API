@@ -3,7 +3,7 @@ import { OK } from 'http-status-codes';
 import { UltraMSGData, UltraMSGService } from '../services/ultraMSG.service';
 import { AccountService, KonectaAIApiService } from '../services';
 import { LimitRequestError } from '../helpers/errors/limitRequestError';
-import { StripeService } from "../services/stripe.service";
+import {BASIC_PLAN, ENTERPRISE_PLAN, StripeService} from "../services/stripe.service";
 import config from "../config";
 
 export class UltraMSGController {
@@ -65,10 +65,17 @@ export class UltraMSGController {
             res.status(OK).json({ message: 'Konecta Main API' });
         } catch (e) {
             const phone = this.ultraMSGService.getPhone(data);
+
+            let plan = BASIC_PLAN;
+            const account = await this.accountService.findByPhone(phone);
+            if (account.planName === BASIC_PLAN.name) {
+                plan = ENTERPRISE_PLAN;
+            }
+
             if (e instanceof LimitRequestError) {
                 // const account = await this.accountService.findByPhone(data.from);
                 // if (account) {}
-                const url = await this.stripeService.createStripeLink(phone, config.stripe.proPrice);
+                const url = await this.stripeService.createStripeLink(phone, plan);
                 const name = this.ultraMSGService.getName(data);
 
                 await this.ultraMSGService.sendMessage(

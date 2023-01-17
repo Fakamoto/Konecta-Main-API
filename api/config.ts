@@ -56,7 +56,7 @@ const config = {
 
     stripe: {
         secret: process.env.STRIPE_SECRET!,
-        proPrice: process.env.STRIPE_PRO_PRICE!,
+        basicPrice: process.env.STRIPE_BASIC_PRICE!,
         enterprisePrice: process.env.STRIPE_ENTERPRISE_PRICE!,
     },
 };

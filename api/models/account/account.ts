@@ -16,6 +16,9 @@ export class Account extends Model<Account> {
     @Column({})
     phone!: string;
 
+    @Column({})
+    planName!: string;
+
     @Default(1500)
     @Column({})
     textGeneratorLimit!: number;

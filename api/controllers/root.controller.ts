@@ -20,7 +20,6 @@ export class RootController {
     };
 
     createStripeLink = async (req: Request, res: Response): Promise<void> => {
-        const url = this.stripeService.createStripeLink(req.body.phone, config.stripe.proPrice);
-        res.status(OK).json({ url });
+        res.status(OK).json({ url: undefined });
     };
 }
