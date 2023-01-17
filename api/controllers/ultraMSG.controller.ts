@@ -95,10 +95,10 @@ export class UltraMSGController {
         if (!account) account = await this.accountService.create({ phone });
 
         // Is a User generating an Image
-        if (isFromUser && isImage) {
+        if (isFromUser && isImage && prompt) {
             return {
                 data: await this.konectaAIApiService.generateImageFromImage(account, data.media, prompt),
-                type: 'image', // TODO: change to image
+                type: 'image',
             }
         }
 
@@ -124,7 +124,7 @@ export class UltraMSGController {
         if (replyImage) {
             return {
                 data: await this.konectaAIApiService.generateImageFromImage(account, data.quotedMsg.media, prompt),
-                type: 'image', // TODO: change to image
+                type: 'image',
             }
         }
 

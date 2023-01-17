@@ -1,6 +1,5 @@
 import { Configuration, OpenAIApi } from 'openai';
 
-
 export class OpenaiService {
 
     configuration = new Configuration({
