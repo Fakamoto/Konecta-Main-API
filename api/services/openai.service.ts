@@ -17,8 +17,7 @@ export class OpenaiService {
             finalPrompt += `: "${mentioned}"`
         }
 
-        finalPrompt += '\n\n'
-        finalPrompt += 'Konecta:'
+        finalPrompt += '\n'
 
         const completion = await this.openai.createCompletion({
             model: 'text-davinci-003',
@@ -28,7 +27,7 @@ export class OpenaiService {
             top_p: 1,
             frequency_penalty: 0.5,
             presence_penalty: 0,
-            stop: ['Konecta:']
+            stop: ['\n']
         });
 
         console.log(completion.data.choices[0].text);
