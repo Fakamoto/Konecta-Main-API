@@ -5,7 +5,7 @@ const getContentTypeOfURl = (url: string): Promise<string> => {
     return new Promise((resolve, reject) => {
         request.head(url, (err, res) => {
             if (err) return reject(err);
-            resolve(res.headers['content-type']);
+            resolve(res.headers['Content-type']);
         });
     });
 }
@@ -96,7 +96,7 @@ export class UltraMSGService {
         if (!this.isReplyMedia(data)) return false;
 
         const contentType = await getContentTypeOfURl(data.quotedMsg.media)
-        return contentType === 'image/jpeg';
+        return contentType.startsWith('image');
     }
 
     async isReplyAudio(data: UltraMSGData): Promise<boolean> {
