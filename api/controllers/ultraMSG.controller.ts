@@ -48,7 +48,7 @@ export class UltraMSGController {
             // get Reply
             const prompt = this.ultraMSGService.getPrompt(data);
             const quotaMessage = this.ultraMSGService.getReplyMessage(data);
-            const { data: reply, type } = await this.getReply(data, { prompt, quotaMessage, isFromGroup, isFromUser, isAudio, isImage });
+            const { data: reply, type, msgId } = await this.getReply(data, { prompt, quotaMessage, isFromGroup, isFromUser, isAudio, isImage });
 
             const formattedReply = reply
                 .replace('conecta', 'Konecta')
@@ -59,7 +59,7 @@ export class UltraMSGController {
             }
 
             if (type === 'message') {
-                await this.ultraMSGService.sendMessage(formattedReply, data.from);
+                await this.ultraMSGService.sendMessage(formattedReply, data.from, msgId);
             }
 
             res.status(OK).json({ message: 'Konecta Main API' });
@@ -100,7 +100,7 @@ export class UltraMSGController {
         }
     };
 
-    async getReply(data: UltraMSGData, { prompt, quotaMessage, isFromUser, isAudio, isImage }: { prompt: string, quotaMessage: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message' }> {
+    async getReply(data: UltraMSGData, { prompt, quotaMessage, isFromUser, isAudio, isImage }: { prompt: string, quotaMessage: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message', msgId?: string }> {
         const phone = this.ultraMSGService.getPhone(data);
         let account = await this.accountService.findByPhone(phone)
 
@@ -127,7 +127,7 @@ export class UltraMSGController {
             if (data.type === 'audio') {
                 return {
                     data: audioTranscription,
-                    type: 'message',
+                    type: 'message'
                 }
             }
 
@@ -165,12 +165,14 @@ export class UltraMSGController {
                 return {
                     data: await this.konectaAIApiService.generateText(account, text, quotaMessage, true),
                     type: 'message',
+                    msgId: data.quotedMsg.id,
                 }
             }
 
             return {
                 data: transcription,
                 type: 'message',
+                msgId: data.quotedMsg.id,
             }
         }
 
