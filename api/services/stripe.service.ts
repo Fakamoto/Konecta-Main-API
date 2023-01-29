@@ -102,17 +102,19 @@ export class StripeService {
                 metadata.planName,
                 plans[price],
             );
-            this.logger.debug(`Payment success for ${metadata?.phone}`);
+            await this.ultraMSGService.sendMessage(
+                `Congratulations! You have successfully upgrade your plan to "Lite Subscription"! If you want to cancel your subscription, you can do it sending /cancel-subscription in this private conversation.`,
+                phone,
+            );
+
+            this.logger.debug(`Payment success for ${phone}`);
 
             await this.stripe.subscriptions.cancel(account.subscriptionId)
                 .then((data) => {
                     console.log(data);
                 });
 
-            await this.ultraMSGService.sendMessage(
-                'Congratulations! You have successfully upgrade your plan to "Lite Subscription"! If you want to cancel your subscription, you can do it sending /cancel in this private conversation.',
-                phone,
-            );
+
         }
 
         if (type === 'charge.refunded') {
@@ -120,7 +122,7 @@ export class StripeService {
             await this.accountService.setFree(
                 paymentId,
             );
-            this.logger.error(`Payment Refund for ${metadata?.phone}`);
+            this.logger.error(`Payment Refund for ${phone}`);
         }
     }
 
