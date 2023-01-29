@@ -5,7 +5,7 @@ const getContentTypeOfURl = (url: string): Promise<string> => {
     return new Promise((resolve, reject) => {
         request.head(url, (err, res) => {
             if (err) return reject(err);
-            resolve(res.headers['Content-type']);
+            resolve(res.headers['content-type']);
         });
     });
 }

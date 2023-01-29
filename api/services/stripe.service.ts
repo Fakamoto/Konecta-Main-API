@@ -107,7 +107,7 @@ export class StripeService {
                 phone,
             );
 
-            this.logger.debug(`Payment success for ${phone}`);
+            this.logger.debug(`Payment success for ${metadata.phone}`);
 
             await this.stripe.subscriptions.cancel(account.subscriptionId)
                 .then((data) => {
@@ -122,7 +122,7 @@ export class StripeService {
             await this.accountService.setFree(
                 paymentId,
             );
-            this.logger.error(`Payment Refund for ${phone}`);
+            this.logger.error(`Payment Refund for ${metadata.phone}`);
         }
     }
 
