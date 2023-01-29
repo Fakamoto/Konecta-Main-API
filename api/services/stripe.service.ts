@@ -36,6 +36,21 @@ const plans: { [price: string]: PlanLimits } = {
     }
 }
 
+const normalizePhone = (phone: string): string => {
+    let normalizedPhone = phone;
+    normalizedPhone = normalizedPhone.replace('+', '');
+    if (normalizedPhone.startsWith('54') && !normalizedPhone.startsWith('549')) {
+        normalizedPhone = normalizedPhone.slice(0, 2) + '9' + normalizedPhone.slice(2);
+    }
+    else if (normalizedPhone.startsWith('52') && !normalizedPhone.startsWith('521')) {
+        normalizedPhone = normalizedPhone.slice(0, 2) + '1' + normalizedPhone.slice(2);
+    }
+
+    normalizedPhone = `${normalizedPhone}@c.us`;
+    console.log(`${phone} => ${normalizedPhone}`);
+    return normalizedPhone;
+}
+
 export class StripeService {
 
     private stripe: Stripe;
@@ -65,15 +80,16 @@ export class StripeService {
 
         return url;
     }
+
     webhookHandler = async (type: string, data: Stripe.Event.Data): Promise<void> => {
         const fullObject: Stripe.Event.Data.Object = data.object;
         const { metadata, subscription: subscriptionId, id: paymentId, amount_total: price, customer_details: customer } = fullObject as any;
         // console.log(type, metadata, price);
 
         if (type === 'checkout.session.completed') {
-            let phone = metadata.phone;
-            if (customer.phone) {
-                phone = `${customer.phone}@c.us`;
+            let phone = customer.phone;
+            if (phone) {
+                phone = normalizePhone(customer.phone);
             }
 
             const account = await this.accountService.findByPhone(phone);

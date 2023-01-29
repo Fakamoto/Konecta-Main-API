@@ -75,15 +75,19 @@ export class UltraMSGController {
             if (e instanceof LimitRequestError) {
                 // const account = await this.accountService.findByPhone(data.from);
                 // if (account) {}
-                const url = await this.stripeService.createStripeLink(phone, plan);
+                // const url = await this.stripeService.createStripeLink(phone, plan);
                 const name = this.ultraMSGService.getName(data);
 
+                const isFromGroup = this.ultraMSGService.isFromGroup(data);
+                if (isFromGroup) {
+                    await this.ultraMSGService.sendMessage(
+                        `*${name}* You have reached the limit of this *free trial*.`,
+                        data.from,
+                    );
+                }
+
                 await this.ultraMSGService.sendMessage(
-                    `*${name}* You have reached the limit of this *free trial*.`,
-                    data.from,
-                );
-                await this.ultraMSGService.sendMessage(
-                    `*${name}* You have reached the limit of this *free trial*! \nBut don't worry, keep enjoying this service for only *$3/month* with our Lite Subscription! \n${url}`,
+                    `*${name}* You have reached the limit of your plan! Check our subscriptions at *Konecta.tech/store*`,
                     phone,
                 );
 
@@ -99,7 +103,14 @@ export class UltraMSGController {
     async getReply(data: UltraMSGData, { prompt, quotaMessage, isFromUser, isAudio, isImage }: { prompt: string, quotaMessage: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message' }> {
         const phone = this.ultraMSGService.getPhone(data);
         let account = await this.accountService.findByPhone(phone)
-        if (!account) account = await this.accountService.create({ phone });
+
+        if (!account) {
+            account = await this.accountService.create({ phone })
+            this.ultraMSGService.sendMessage(
+                `*Hi 😁 I Am Konecta!*\n\n*Check Our Website To Learn The Instructions!: Konecta.tech*`,
+                phone,
+            );
+        };
 
         // Is a User generating an Image
         if (isFromUser && isImage && prompt) {
