@@ -111,7 +111,7 @@ export class StripeService {
 
             await this.ultraMSGService.sendMessage(
                 'Congratulations! You have successfully upgrade your plan to "Lite Subscription"! If you want to cancel your subscription, you can do it sending /cancel in this private conversation.',
-                metadata.phone,
+                phone,
             );
         }
 
