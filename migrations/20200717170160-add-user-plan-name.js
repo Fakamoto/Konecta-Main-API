@@ -1,7 +1,8 @@
 module.exports = {
     up: async (queryInterface, Sequelize) => {
         await queryInterface.addColumn('Accounts', 'planName', {
-            allowNull: true,
+            allowNull: false,
+            defaultValue: 'Free',
             type: Sequelize.STRING,
         });
     },

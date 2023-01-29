@@ -18,8 +18,8 @@ export const PLAN = {
 
 export type Plan = { id: number, priceId: string, name: string };
 
-export const BASIC_PLAN: Plan = { id: 300, priceId: config.stripe.basicPrice, name: 'Basic' };
-export const ENTERPRISE_PLAN: Plan = { id: 1000, priceId: config.stripe.enterprisePrice, name: 'Enterprise' };
+export const BASIC_PLAN: Plan = { id: 300, priceId: config.stripe.basicPrice, name: 'Lite' };
+export const ENTERPRISE_PLAN: Plan = { id: 1000, priceId: config.stripe.enterprisePrice, name: 'Pro' };
 
 const plans: { [price: string]: PlanLimits } = {
     [BASIC_PLAN.id]: {
