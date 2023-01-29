@@ -59,7 +59,7 @@ export class UltraMSGController {
             }
 
             if (type === 'message') {
-                await this.ultraMSGService.sendMessage(formattedReply, data.from, msgId);
+                await this.ultraMSGService.sendMessage(formattedReply, data.from, { msgId });
             }
 
             res.status(OK).json({ message: 'Konecta Main API' });
@@ -80,15 +80,18 @@ export class UltraMSGController {
 
                 const isFromGroup = this.ultraMSGService.isFromGroup(data);
                 if (isFromGroup) {
+                    const mention = phone.split('@')[0];
                     await this.ultraMSGService.sendMessage(
-                        `*${name}* You have reached the limit of this *free trial*.`,
+                        `*@${mention}* You have reached the limit of this *free trial*.`,
                         data.from,
+                        { mention }
                     );
                 }
 
                 await this.ultraMSGService.sendMessage(
                     `*${name}* You have reached the limit of your plan! Check our subscriptions at *Konecta.tech/store*`,
                     phone,
+
                 );
 
                 res.status(OK).json({ message: 'Limit reached' });

@@ -143,7 +143,7 @@ export class UltraMSGService {
         return data.quotedMsg ? data.quotedMsg.body : '';
     }
 
-    sendMessage(prompt: string, to: string, msgId?: string) {
+    sendMessage(prompt: string, to: string, { msgId, mention }: { msgId?: string, mention?: string } = {}) {
         return new Promise((resolve, reject) => {
             const options = {
                 method: 'POST',
@@ -155,7 +155,8 @@ export class UltraMSGService {
                     body: prompt,
                     priority: '5',
                     referenceId: '',
-                    msgId
+                    msgId,
+                    mentions: mention ? [mention] : undefined
                 }
             };
 
