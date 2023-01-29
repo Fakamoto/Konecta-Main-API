@@ -12,13 +12,17 @@ export class OpenaiService {
         // if (mentioned) finalPrompt += `\n\nQuote: ${mentioned}`;
         // finalPrompt+= `\n\nUser: ${prompt}`;
 
-        let finalPrompt = prompt;
+        let finalPrompt = `Request: "${prompt}"`;
+
         if (mentioned) {
             finalPrompt += `: "${mentioned}"`
         }
+        else {
+            finalPrompt += "\nAnswer:"
+        }
 
-        finalPrompt += "/n"
 
+        console.log(finalPrompt)
         const completion = await this.openai.createCompletion({
             model: 'text-davinci-003',
             prompt: finalPrompt,
@@ -27,7 +31,7 @@ export class OpenaiService {
             top_p: 1,
             frequency_penalty: 0.5,
             presence_penalty: 0,
-            stop: ['/n']
+            stop: ["Answer:"]
         });
 
         console.log(completion.data.choices[0].text);
