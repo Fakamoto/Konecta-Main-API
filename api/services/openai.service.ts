@@ -12,14 +12,14 @@ export class OpenaiService {
         // if (mentioned) finalPrompt += `\n\nQuote: ${mentioned}`;
         // finalPrompt+= `\n\nUser: ${prompt}`;
 
-        let finalPrompt = `Request: "${prompt}"`;
+        let finalPrompt = `Q: ${prompt}`;
 
         if (mentioned) {
             finalPrompt += `: "${mentioned}"`
         }
-        else {
-            finalPrompt += "\nAnswer:"
-        }
+
+        finalPrompt += "\nA:"
+
 
 
         console.log(finalPrompt)
