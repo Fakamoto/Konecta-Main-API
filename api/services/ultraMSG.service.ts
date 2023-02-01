@@ -189,4 +189,27 @@ export class UltraMSGService {
             });
         });
     }
+    sendSticker(urlOrBase64: string, to: string, caption: string = ''): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const options = {
+                method: 'POST',
+                url: `https://api.ultramsg.com/${Config.ultraMSG.instance}/messages/sticker`,
+                headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                form: {
+                    token: Config.ultraMSG.token,
+                    to,
+                    sticker: urlOrBase64,
+                    caption,
+                    referenceId: '',
+                    nocache: ''
+                }
+            };
+
+            request(options, function (error, response, body) {
+                if (error) return reject(error);
+                resolve(body);
+            });
+        });
+    }
+
 }

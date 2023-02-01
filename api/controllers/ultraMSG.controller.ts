@@ -4,6 +4,7 @@ import { UltraMSGData, UltraMSGService } from '../services/ultraMSG.service';
 import { AccountService, KonectaAIApiService } from '../services';
 import { LimitRequestError } from '../helpers/errors/limitRequestError';
 import { BASIC_PLAN, ENTERPRISE_PLAN, StripeService } from '../services/stripe.service';
+import { containsAnyString } from '../services/ultraMSG.service';
 
 export class UltraMSGController {
 
@@ -58,6 +59,10 @@ export class UltraMSGController {
                 await this.ultraMSGService.sendImage(formattedReply, data.from);
             }
 
+            if (type === 'sticker') {
+                await this.ultraMSGService.sendSticker(formattedReply, data.from);
+            }
+
             if (type === 'message') {
                 await this.ultraMSGService.sendMessage(formattedReply, data.from, { msgId });
             }
@@ -103,7 +108,7 @@ export class UltraMSGController {
         }
     };
 
-    async getReply(data: UltraMSGData, { prompt, quotaMessage, isFromUser, isAudio, isImage }: { prompt: string, quotaMessage: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message', msgId?: string }> {
+    async getReply(data: UltraMSGData, { prompt, quotaMessage, isFromUser, isAudio, isImage }: { prompt: string, quotaMessage: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message' | 'sticker', msgId?: string }> {
         const phone = this.ultraMSGService.getPhone(data);
         let account = await this.accountService.findByPhone(phone)
 
@@ -117,6 +122,13 @@ export class UltraMSGController {
 
         // Is a User generating an Image
         if (isFromUser && isImage && prompt) {
+
+            if (containsAnyString(prompt.toLowerCase(), ['sticker', 'stickers'])) {
+                return {
+                    data: data.media,
+                    type: 'sticker',
+                }
+            }
             return {
                 data: await this.konectaAIApiService.generateImageFromImage(account, data.media, prompt),
                 type: 'image',
@@ -142,6 +154,14 @@ export class UltraMSGController {
 
         // if reply image
         const replyImage = await this.ultraMSGService.isReplyImage(data);
+
+        if (containsAnyString(prompt.toLowerCase(), ['sticker', 'stickers'])) {
+            return {
+                data: data.quotedMsg.media,
+                type: 'sticker',
+            }
+        }
+
         if (replyImage) {
             return {
                 data: await this.konectaAIApiService.generateImageFromImage(account, data.quotedMsg.media, prompt),
