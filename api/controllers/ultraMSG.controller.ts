@@ -45,11 +45,12 @@ export class UltraMSGController {
 
             const isAudio = this.ultraMSGService.isAudio(data);
             const isImage = this.ultraMSGService.isImage(data);
+            const isSticker = this.ultraMSGService.isSticker(data);
 
             // get Reply
             const prompt = this.ultraMSGService.getPrompt(data);
             const quotaMessage = this.ultraMSGService.getReplyMessage(data);
-            const { data: reply, type, msgId } = await this.getReply(data, { prompt, quotaMessage, isFromGroup, isFromUser, isAudio, isImage });
+            const { data: reply, type, msgId } = await this.getReply(data, { prompt, quotaMessage, isFromGroup, isFromUser, isAudio, isImage, isSticker });
 
             const formattedReply = reply
                 .replace('conecta', 'Konecta')
@@ -108,7 +109,7 @@ export class UltraMSGController {
         }
     };
 
-    async getReply(data: UltraMSGData, { prompt, quotaMessage, isFromUser, isAudio, isImage }: { prompt: string, quotaMessage: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean }): Promise<{ data: string, type: 'image' | 'message' | 'sticker', msgId?: string }> {
+    async getReply(data: UltraMSGData, { prompt, quotaMessage, isFromUser, isAudio, isImage, isSticker }: { prompt: string, quotaMessage: string, isFromGroup: boolean, isFromUser: boolean, isAudio: boolean, isImage: boolean, isSticker: boolean }): Promise<{ data: string, type: 'image' | 'message' | 'sticker', msgId?: string }> {
         const phone = this.ultraMSGService.getPhone(data);
         let account = await this.accountService.findByPhone(phone)
 
@@ -121,18 +122,29 @@ export class UltraMSGController {
         };
 
         // Is a User generating an Image
-        if (isFromUser && isImage && prompt) {
-
-            if (containsAnyString(prompt.toLowerCase(), ['sticker', 'stickers'])) {
+        if (isFromUser && (isImage || isSticker) && prompt) {
+            if (containsAnyString(prompt.toLowerCase(), ['sticker', 'stickers']) && isImage) {
                 return {
                     data: data.media,
                     type: 'sticker',
                 }
             }
-            return {
-                data: await this.konectaAIApiService.generateImageFromImage(account, data.media, prompt),
-                type: 'image',
+            if (isImage) {
+                return {
+                    data: await this.konectaAIApiService.generateImageFromImage(account, data.media, prompt),
+                    type: 'image',
+                }
             }
+
+            else {
+                return {
+                    data: await this.konectaAIApiService.generateImageFromImage(account, data.media, prompt),
+                    type: 'sticker',
+                }
+            }
+
+
+
         }
 
         // if audio from User
@@ -154,18 +166,28 @@ export class UltraMSGController {
 
         // if reply image
         const replyImage = await this.ultraMSGService.isReplyImage(data);
+        const replySticker = await this.ultraMSGService.isReplySticker(data);
 
-        if (containsAnyString(prompt.toLowerCase(), ['sticker', 'stickers'])) {
-            return {
-                data: data.quotedMsg.media,
-                type: 'sticker',
+        if (replyImage || replySticker) {
+
+            if (containsAnyString(prompt.toLowerCase(), ['sticker', 'stickers']) && replyImage) {
+                return {
+                    data: data.quotedMsg.media,
+                    type: 'sticker',
+                }
             }
-        }
 
-        if (replyImage) {
-            return {
-                data: await this.konectaAIApiService.generateImageFromImage(account, data.quotedMsg.media, prompt),
-                type: 'image',
+            if (isImage) {
+                return {
+                    data: await this.konectaAIApiService.generateImageFromImage(account, data.quotedMsg.media, prompt),
+                    type: 'image',
+                }
+            }
+            else {
+                return {
+                    data: await this.konectaAIApiService.generateImageFromImage(account, data.quotedMsg.media, prompt),
+                    type: 'sticker',
+                }
             }
         }
 

@@ -87,6 +87,10 @@ export class UltraMSGService {
         return data.type === 'image';
     }
 
+    isSticker(data: UltraMSGData): boolean {
+        return data.type === 'sticker';
+    }
+
     // TODO: change this to Redis Chche.
     isReplyMedia(data: UltraMSGData): boolean {
         return data.quotedMsg.media;
@@ -97,6 +101,12 @@ export class UltraMSGService {
 
         const contentType = await getContentTypeOfURl(data.quotedMsg.media)
         return contentType.startsWith('image');
+    }
+    async isReplySticker(data: UltraMSGData): Promise<boolean> {
+        if (!this.isReplyMedia(data)) return false;
+
+        const contentType = await getContentTypeOfURl(data.quotedMsg.media)
+        return contentType.startsWith('sticker');
     }
 
     async isReplyAudio(data: UltraMSGData): Promise<boolean> {
